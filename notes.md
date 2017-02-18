@@ -1,9 +1,9 @@
- Create files & folders
+a Create files & folders
 	-	README.md
 	-	LICENCE.md
 	-	CONTRIBUTING.md
 	-	spec folder
-	-	public folder
+	-	public folder (for css, img and JS files)
 	-	Gemfile
 		source 'http://rubygems.org'
 
@@ -58,6 +58,7 @@
 
 
 	- config/environment.rb
+		# Connect up all the files n our application to the appropriate gems and to each other.
 		ENV['SINATRA_ENV'] ||= "development"
 
 		require 'bundler/setup'
@@ -77,7 +78,7 @@
 	-	app/controllers/application_controller.rb
 		require './config/environment'
 
-		class ApplicationController < Sinatra::Base
+		class AppliacationController < Sinatra::Base
 
 		  configure do
 		    set :public_folder, 'public'
@@ -94,5 +95,53 @@
 		require_relative './config/environment'
 		require 'sinatra/activerecord/rake'
 
+	- .gitignore
+		https://gist.github.com/octocat/9257657
 
-	2. $ bundle install
+		# Compiled source #
+		###################
+		*.com
+		*.class
+		*.dll
+		*.exe
+		*.o
+		*.so
+
+		# Packages #
+		############
+		# it's better to unpack these files and commit the raw source
+		# git has its own built in compression methods
+		*.7z
+		*.dmg
+		*.gz
+		*.iso
+		*.jar
+		*.rar
+		*.tar
+		*.zip
+
+		# Logs and databases #
+		######################
+		*.log
+		*.sql
+		*.sqlite
+
+		# OS generated files #
+		######################
+		.DS_Store
+		.DS_Store?
+		._*
+		.Spotlight-V100
+		.Trashes
+		ehthumbs.db
+		Thumbs.db
+
+
+			2. $ bundle install
+
+			Resources
+
+
+		-RESOURCES
+			Routes
+			http://www.sinatrarb.com/intro.html#Routes
