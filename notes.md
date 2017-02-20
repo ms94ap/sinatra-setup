@@ -43,6 +43,7 @@ a Create files & folders
 		end
 
 		#Starting Application
+		#use Rack::MethodOverride for patch & delete requests.
 		use PostsController #MOUNTING A CONTROLLER
 
 		#You need to mount controllers because otherwise our Application
@@ -78,13 +79,14 @@ a Create files & folders
 	-	app/controllers/application_controller.rb
 		require './config/environment'
 
-		class AppliacationController < Sinatra::Base
+		class ApplicationController < Sinatra::Base
 
 		  configure do
 		    set :public_folder, 'public'
 		    set :views, 'app/views'
 		    enable :sessions
 		    set :session_secret, "pickaname"
+		  end
 		  end
 
 
@@ -96,7 +98,7 @@ a Create files & folders
 		require 'sinatra/activerecord/rake'
 
 	- .gitignore
-		https://gist.github.com/octocat/9257657
+		#https://gist.github.com/octocat/9257657
 
 		# Compiled source #
 		###################
@@ -139,9 +141,65 @@ a Create files & folders
 
 			2. $ bundle install
 
-			Resources
-
-
-		-RESOURCES
+##########################
+	-RESOURCES
 			Routes
 			http://www.sinatrarb.com/intro.html#Routes
+
+			Rake
+			http://rake.rubyforge.org/
+
+			ERB templating
+			http://www.stuartellis.name/articles/erb/
+
+			class PostController < ApplicationController
+
+	# posts#index action
+	get '/' do 
+	    @posts = Post.all
+	    erb :"posts/index"
+  	end
+
+  	# posts#new action
+ 	get '/posts/new' do
+    	erb :"posts/new"
+  	end
+
+  	# posts#show action
+  	get '/posts/:id' do
+	   	@post = Post.find(params[:id])
+	   	erb :"posts/show"
+ 	end
+
+ 	# posts#create action
+  	post '/posts' do
+	   @post = Post.new
+	   @post.title = params[:title]
+	   @post.content = params[:content]
+	   @post.save
+	   redirect to "posts/#{@post.id}"
+	end
+
+	# posts#edit action
+ 	get '/posts/:id/edit' do
+  		@post = Post.find(params[:id])
+   		erb :edit
+ 	end
+
+ 	# posts#update action
+ 	post '/posts/:id' do
+	   @post = Post.find(params[:id])
+	   @post.name = params[:name]
+	   @post.content = params[:content]
+	   @post.save
+  		redirect "posts/show"
+ 	end
+
+ 	# posts#delete action
+ 	delete '/posts/:id/delete' do
+		@post = Post.find_by_id(params[:id])
+		@post.delete
+		erb :index
+	end
+
+end
