@@ -10,13 +10,13 @@ a Create files & folders
 			gem 'sinatra'
 			#For ORM management
 			gem 'activerecord', :require => 'active_record'
-			#To use Activerecord in Sinatra
+			#To use ActiveRecord in Sinatra
 			gem 'sinatra-activerecord', :require => 'sinatra/activerecord'
 			#To rake commands .ie run migrations, create, rollback etc.
 			gem 'rake'
 			#Add some more require dependencies
 			gem 'require_all'
-			#Our DB
+			#Our DB adapter gem
 			gem 'sqlite3'
 			gem 'thin'
 			#To run server
@@ -59,7 +59,7 @@ a Create files & folders
 
 
 	- config/environment.rb
-		# Connect up all the files n our application to the appropriate gems and to each other.
+		# Connect up all the files in our application to the appropriate gems and to each other.
 		ENV['SINATRA_ENV'] ||= "development"
 
 		require 'bundler/setup'
@@ -91,9 +91,15 @@ a Create files & folders
 
 
 	-	Rakefile
+		#rake gives us the ability to quickly make files and setup automated tasks. We
+		#define these in Rakefile. In the Rakefile, we'll require our config/evironment.rb
+		#file to load up our environment, as well as "sinatra/activerecord/rake" to get
+		#Rake tasks from the sinatra-activerecord gem.
 
 		ENV["SINATRA_ENV"] ||= "development"
 
+		# Type `rake -T` on your command line to see the available rake tasks.
+		
 		require_relative './config/environment'
 		require 'sinatra/activerecord/rake'
 
@@ -155,7 +161,7 @@ a Create files & folders
 			class PostController < ApplicationController
 
 	# posts#index action
-	get '/' do 
+	get '/posts' do 
 	    @posts = Post.all
 	    erb :"posts/index"
   	end
@@ -167,7 +173,7 @@ a Create files & folders
 
   	# posts#show action
   	get '/posts/:id' do
-	   	@post = Post.find(params[:id])
+	   	@post = Post.find_by(params[:id])
 	   	erb :"posts/show"
  	end
 
@@ -183,23 +189,23 @@ a Create files & folders
 	# posts#edit action
  	get '/posts/:id/edit' do
   		@post = Post.find(params[:id])
-   		erb :edit
+   		erb :"posts/edit"
  	end
 
  	# posts#update action
  	post '/posts/:id' do
 	   @post = Post.find(params[:id])
-	   @post.name = params[:name]
+	   @post.title = params[:title]
 	   @post.content = params[:content]
 	   @post.save
-  		redirect "posts/show"
+  		erb :"posts/#{@post.id}"
  	end
 
  	# posts#delete action
  	delete '/posts/:id/delete' do
 		@post = Post.find_by_id(params[:id])
 		@post.delete
-		erb :index
+		redirect to :'posts/index'
 	end
 
 end
